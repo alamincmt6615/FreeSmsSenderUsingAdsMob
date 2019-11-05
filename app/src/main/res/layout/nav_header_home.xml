@@ -12,16 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:srcCompat="@drawable/baby" />
+
     <ImageView
         android:id="@+id/iv_image_picker"
-        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:src="@drawable/ic_photo_camera"
-        android:layout_marginBottom="5dp"
-        android:layout_width="30dp"
-        android:layout_height="20dp"
-        android:layout_alignParentEnd="true"
-         />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:id="@+id/tv_nav_user_name"

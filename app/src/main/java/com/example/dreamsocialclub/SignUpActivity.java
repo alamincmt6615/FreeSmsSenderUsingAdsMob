@@ -73,47 +73,49 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
     private void create_new_account() {
 
-                final String name = et_registration_user_name.getText().toString().trim();
-                final String phone_number = et_registration_user_phone_number.getText().toString().trim();
-                String password = et_registration_user_password.getText().toString().trim();
-                String re_password = et_registration_user_re_type_password.getText().toString().trim();
+        final String name = et_registration_user_name.getText().toString().trim();
+        final String phone_number = et_registration_user_phone_number.getText().toString().trim();
+        String password = et_registration_user_password.getText().toString().trim();
+        String re_password = et_registration_user_re_type_password.getText().toString().trim();
 
-                if(TextUtils.isEmpty(name)){
-                    et_registration_user_name.setError("Enter Name .");
-                    et_registration_user_name.requestFocus();
-                    return;
-                }else if (TextUtils.isEmpty(phone_number)){
-                    et_registration_user_phone_number.setError("Enter Phone Number");
-                    et_registration_user_phone_number.requestFocus();
-                    return;
+        if(TextUtils.isEmpty(name)){
+            et_registration_user_name.setError("Enter Name .");
+            et_registration_user_name.requestFocus();
+            return;
+        }else if (TextUtils.isEmpty(phone_number)){
+            et_registration_user_phone_number.setError("Enter Phone Number");
+            et_registration_user_phone_number.requestFocus();
+            return;
 
-                }else if (TextUtils.isEmpty(password)){
-                    et_registration_user_password.setError("Enter Password");
-                    et_registration_user_password.requestFocus();
-                    return;
-                }else if (password.length()<6){
-                    et_registration_user_password.setError("The password must contain at least 6 character");
-                    et_registration_user_password.requestFocus();
-                    return;
+        }else if (TextUtils.isEmpty(password)){
+            et_registration_user_password.setError("Enter Password");
+            et_registration_user_password.requestFocus();
+            return;
+        }else if (password.length()<6){
+            et_registration_user_password.setError("The password must contain at least 6 character");
+            et_registration_user_password.requestFocus();
+            return;
 
-                }else if (TextUtils.isEmpty(re_password)){
-                    et_registration_user_re_type_password.setError("Enter Password Again");
-                    et_registration_user_re_type_password.requestFocus();
-                    return;
-                }else if (!password.matches(re_password)){
-                    et_registration_user_re_type_password.setError("Password doesn't match");
-                    et_registration_user_re_type_password.requestFocus();
-                    return;
+        }else if (TextUtils.isEmpty(re_password)){
+            et_registration_user_re_type_password.setError("Enter Password Again");
+            et_registration_user_re_type_password.requestFocus();
+            return;
+        }else if (!password.matches(re_password)){
+            et_registration_user_re_type_password.setError("Password doesn't match");
+            et_registration_user_re_type_password.requestFocus();
+            return;
 
-                }else {
+        }else {
 
-                    preferenceData.setValue("name",name);
-                    preferenceData.setValue("phone",phone_number);
-                    Intent gotoveryfication = new Intent(SignUpActivity.this,VerifyPhoneActivity.class);
-                   gotoveryfication.putExtra("mobile",phone_number);
-                    startActivity(gotoveryfication);
-                }
-
+            preferenceData.setValue("name",name);
+            preferenceData.setValue("phone",phone_number);
+            preferenceData.setValue("email",phone_number+"@gmail.com");
+            preferenceData.setValue("password",password);
+            Intent gotoveryfication = new Intent(SignUpActivity.this,VerifyPhoneActivity.class);
+            gotoveryfication.putExtra("mobile",phone_number);
+            startActivity(gotoveryfication);
+        }
     }
+
 
 }

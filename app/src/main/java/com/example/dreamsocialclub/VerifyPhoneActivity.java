@@ -10,7 +10,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.dreamsocialclub.home.HomeActivity;
+import com.example.dreamsocialclub.model.SignUPModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskExecutors;
 import com.google.android.material.snackbar.Snackbar;
@@ -23,11 +25,19 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 public class VerifyPhoneActivity extends AppCompatActivity {
     String mobile;
+    String phone;
     String name;
+    String email;
+    String password;
+    String current_time;
+    String current_date;
+    String profile_pic_url = "profile pic";
     private PreferenceData preferenceData;
     //These are the objects needed
     //It is the verification id that will be sent to the user
@@ -47,11 +57,25 @@ public class VerifyPhoneActivity extends AppCompatActivity {
         setContentView(R.layout.activity_verify_phone);
         this.preferenceData = new PreferenceData(VerifyPhoneActivity.this);
 
+        //getvalue from shard prifrienced
+        name = preferenceData.getStringValue("name");
+        email = preferenceData.getStringValue("email");
+        password = preferenceData.getStringValue("password");
+        phone = preferenceData.getStringValue("phone");
+
         //initializing objects
         mAuth = FirebaseAuth.getInstance();
         editTextCode = findViewById(R.id.editTextCode);
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+        databaseReference = FirebaseDatabase.getInstance().getReference("user_info");
 
+        //current date and time
+        Calendar calForDate = Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMM-yyy");
+        current_date = currentDate.format(calForDate.getTime());
+
+        Calendar calForTime = Calendar.getInstance();
+        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm");
+        current_time = currentTime.format(calForTime.getTime());
 
         //getting mobile number from the previous activity
         //and sending the verification code to the number
@@ -148,11 +172,12 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                             Intent intent = new Intent(VerifyPhoneActivity.this, HomeActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
-                            String current_user_uid = mAuth.getCurrentUser().getUid();
-
-                            databaseReference.child(current_user_uid).child("name").setValue(preferenceData.getStringValue("name"));
-                            databaseReference.child(current_user_uid).child("mobile").setValue(mobile);
-
+//                            String current_user_uid = mAuth.getCurrentUser().getUid();
+//
+//                            SignUPModel signUPModel = new SignUPModel(current_user_uid,preferenceData.getStringValue("name"),mobile,profile_pic_url,current_date,current_time);
+//                            databaseReference.child(current_user_uid).setValue(signUPModel);
+                           // databaseReference.child(current_user_uid).child("name").setValue(preferenceData.getStringValue("name"));
+                            sigUpWithGmailAndPassword();
                         } else {
 
                             //verification unsuccessful.. display an error message
@@ -174,6 +199,23 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+    private void sigUpWithGmailAndPassword(){
+        mAuth.createUserWithEmailAndPassword(email,password)
+            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    String uid = mAuth.getCurrentUser().getUid();
+                    if (task.isSuccessful()){
+                       SignUPModel signUPModel = new SignUPModel(uid,name,phone,profile_pic_url,current_date,current_time);
+                    databaseReference.child(uid).setValue(signUPModel);
+                        Toast.makeText(VerifyPhoneActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(VerifyPhoneActivity.this, "Error : "+task.getException().toString(), Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+            });
     }
 
 }

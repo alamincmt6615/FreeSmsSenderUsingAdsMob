@@ -1,7 +1,11 @@
 package com.example.dreamsocialclub.home;
 
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.example.dreamsocialclub.LoginActivity;
@@ -16,16 +20,29 @@ import com.example.dreamsocialclub.home.ui.topUp.TopUpFragment;
 import com.example.dreamsocialclub.home.ui.convertCoin.ConvertCoinFragment;
 
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -37,15 +54,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private Context context;
     private PreferenceData preferenceData;
     private FirebaseAuth firebaseAuth;
     private ImageView nav_profile_pic;
+    private ImageView iv_image_picker;
 
-
+    private final int PIC_IMAGE_REQUEST = 420;
+    private Uri filepath;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
+    private ProgressDialog progressDialog;
+    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReferencePost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +80,16 @@ public class HomeActivity extends AppCompatActivity
         this.preferenceData = new PreferenceData(context);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        iv_image_picker = findViewById(R.id.iv_image_picker);
+        //iv_image_picker.setOnClickListener(this);
+
         nav_profile_pic = findViewById(R.id.nav_profile_pic);
         setSupportActionBar(toolbar);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference("users");
+        getUserData();
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -81,13 +113,10 @@ public class HomeActivity extends AppCompatActivity
         TextView tv_user_name = headerView.findViewById(R.id.tv_nav_user_name);
         TextView tv_user_mobile = headerView.findViewById(R.id.tv_user_mobile);
 
-
         tv_user_name.setText(preferenceData.getStringValue("name"));
         tv_user_mobile.setText(preferenceData.getStringValue("phone"));
-
-
-
-       // displaySelectedScreen(R.id.nav_home);
+        tv_user_name.setOnClickListener(this);
+       displaySelectedScreen(R.id.nav_home);
     }
 
 //    @Override
@@ -117,6 +146,7 @@ public class HomeActivity extends AppCompatActivity
 //        });
 //    }
     @SuppressWarnings("StatementWithEmptyBody")
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -185,7 +215,6 @@ public class HomeActivity extends AppCompatActivity
         drawerLayout.closeDrawer(GravityCompat.START);
     }
 
-
     boolean doubleBackPressed = false;
     @Override
     public void onBackPressed() {
@@ -234,6 +263,101 @@ public class HomeActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+//    private void chooseimage(){
+//        Intent intent = new Intent();
+//        intent.setType("image/*");
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        startActivityForResult(Intent.createChooser(intent,"Select Picture"),PIC_IMAGE_REQUEST);
+//        Toast.makeText(context, "plz choose image first", Toast.LENGTH_SHORT).show();
+//    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (requestCode == PIC_IMAGE_REQUEST && resultCode == RESULT_OK && data!= null && data.getData() != null){
+//            filepath = data.getData();
+//            try {
+//                Bitmap bitmap = MediaStore.Images.Media.getBitmap(HomeActivity.this.getContentResolver(),filepath);//getActivity().getContentResolver(),filepath
+//                nav_profile_pic.setImageBitmap(bitmap);
+//                if (bitmap != null){
+//
+//                    uploadimage();
+//
+//                }
+//
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+//    private void uploadimage() {
+//        storage = FirebaseStorage.getInstance();
+//        storageReference = storage.getReference().child("profile_picture");
+//        firebaseAuth = FirebaseAuth.getInstance();
+//        final String user_uid = firebaseAuth.getCurrentUser().getUid();
+//
+//        if (filepath != null){
+//            progressDialog = new ProgressDialog(HomeActivity.this);
+//            progressDialog.setTitle("Uploading...");
+//            progressDialog.show();
+//            final StorageReference ref = storageReference.child(user_uid+".jpg");
+//            ref.putFile(filepath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    progressDialog.dismiss();
+//                    Toast.makeText(context, "Uploaded", Toast.LENGTH_SHORT).show();
+//                    ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                        @Override
+//                        public void onSuccess(Uri uri) {
+//                            databaseReference.child(user_uid).child("profile_picture").setValue(uri.toString());
+//                        }
+//                    });
+//                }
+//            })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            Toast.makeText(context, "Failed "+e.getMessage(), Toast.LENGTH_LONG).show();
+//                        }
+//                    })
+//                    .addOnProgressListener( new OnProgressListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+//                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+//                            progressDialog.setMessage("Uploading "+(int)progress+"%");
+//                        }
+//                    });
+//
+//        }
+//
+//
+//    }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.tv_nav_user_name:
+                Toast.makeText(context, ""+preferenceData.getStringValue("name"), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.iv_image_picker:
+                Toast.makeText(context, "pic", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
 
+    public void getUserData(){
+        databaseReferencePost = FirebaseDatabase.getInstance().getReference("user_info");
+        databaseReferencePost.child(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               preferenceData.setValue("profileUrl", String.valueOf(dataSnapshot.child("profile_pic_url").getValue()));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }

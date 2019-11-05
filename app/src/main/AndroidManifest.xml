@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CasinoActivity"></activity>
+        <activity android:name=".PublicPostActivity"></activity>
+        <activity android:name=".FreeSmsActivity" />
+        <activity android:name=".CasinoActivity" />
         <activity android:name=".home.ui.message.TestActivity" />
         <activity
             android:name=".home.HomeActivity"

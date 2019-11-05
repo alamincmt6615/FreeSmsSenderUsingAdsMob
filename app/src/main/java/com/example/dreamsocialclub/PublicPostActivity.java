@@ -1,24 +1,17 @@
-package com.example.dreamsocialclub.home.ui.home;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+package com.example.dreamsocialclub;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dreamsocialclub.CasinoActivity;
-import com.example.dreamsocialclub.FreeSmsActivity;
-import com.example.dreamsocialclub.PublicPostActivity;
-import com.example.dreamsocialclub.R;
+import android.os.Bundle;
+
+import com.example.dreamsocialclub.adapter.RetreivePersonalPost;
 import com.example.dreamsocialclub.adapter.RetrievePublicPost;
 import com.example.dreamsocialclub.model.UploadPostModel;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,34 +20,24 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment implements View.OnClickListener {
+public class PublicPostActivity extends AppCompatActivity {
+    private DatabaseReference databaseReference,databaseReference_user;
     private RecyclerView rv_public_post;
+    private FirebaseAuth firebaseAuth;
     private RetrievePublicPost retrievePublicPost;
     private ArrayList<UploadPostModel> publicpostlist = new ArrayList<>();
-   DatabaseReference databaseReference;
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-
-
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-        rv_public_post = root.findViewById(R.id.rv_public_post);
-        databaseReference = FirebaseDatabase.getInstance().getReference("Post");
-
-        retreivePublicPost();
-
-        return root;
-    }
-
     @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-
-
-
-        }
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_public_post);
+        rv_public_post = findViewById(R.id.rv_public_post);
+        firebaseAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Post");
+        databaseReference_user = FirebaseDatabase.getInstance().getReference("User");
+       //retrieve data for public post
+        retreivePublicPost();
     }
+
     private void retreivePublicPost() {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -65,8 +48,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     publicpostlist.add(uploadPostModel);
                 }
                 if (publicpostlist.size()>0){
-                    retrievePublicPost = new RetrievePublicPost(publicpostlist,getActivity());
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                    retrievePublicPost = new RetrievePublicPost(publicpostlist,PublicPostActivity.this);
+                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(PublicPostActivity.this);
                     rv_public_post.setLayoutManager(mLayoutManager);
                     rv_public_post.setItemAnimator(new DefaultItemAnimator());
                     rv_public_post.setAdapter(retrievePublicPost);

@@ -37,7 +37,6 @@
                 android:hint="Phone Number"
                 android:inputType="number"
                 android:id="@+id/et_user_name"
-                android:text="01315218889"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/imgView_userIcon"
@@ -75,7 +74,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:text="123456"
                 android:layout_alignBottom="@+id/imgView_userIcon_"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/imgView_userIcon_"
@@ -104,10 +102,11 @@
                 android:layout_width="150dp"
                 android:layout_height="50dp"/>
             <Button
-                android:id="@+id/ben_login"
+                android:id="@+id/btn_login"
                 android:text="Login"
                 android:textAllCaps="false"
                 android:textSize="20sp"
+                android:layout_margin="3dp"
                 android:textColor="@color/colorPrimary"
                 android:background="@drawable/custom_button_background"
                 android:layout_marginTop="10dp"
