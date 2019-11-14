@@ -8,10 +8,10 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home"
             android:title="@string/menu_home" />
-        <item
-            android:id="@+id/nav_silver_coin"
-            android:icon="@drawable/ic_silvercoin"
-            android:title="@string/silver_coin" />
+<!--        <item-->
+<!--            android:id="@+id/nav_silver_coin"-->
+<!--            android:icon="@drawable/ic_silvercoin"-->
+<!--            android:title="@string/silver_coin" />-->
         <item
             android:id="@+id/nav_message"
             android:icon="@drawable/ic_message"
@@ -24,14 +24,14 @@
             android:id="@+id/nav_topup"
             android:icon="@drawable/ic_touch_app"
             android:title="@string/topup" />
-        <item
-            android:id="@+id/nav_convert_coin"
-            android:icon="@drawable/ic_convert_coin"
-            android:title="@string/convert_coin" />
-        <item
-            android:id="@+id/nav_cash_out"
-            android:icon="@drawable/ic_money"
-            android:title="@string/cash_out" />
+<!--        <item-->
+<!--            android:id="@+id/nav_convert_coin"-->
+<!--            android:icon="@drawable/ic_convert_coin"-->
+<!--            android:title="@string/convert_coin" />-->
+<!--        <item-->
+<!--            android:id="@+id/nav_cash_out"-->
+<!--            android:icon="@drawable/ic_money"-->
+<!--            android:title="@string/cash_out" />-->
         <item
             android:id="@+id/nav_tutorial"
             android:icon="@drawable/ic_convert_coin"

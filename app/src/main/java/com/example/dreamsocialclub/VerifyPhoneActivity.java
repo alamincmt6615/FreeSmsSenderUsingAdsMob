@@ -107,7 +107,6 @@ public class VerifyPhoneActivity extends AppCompatActivity {
         });
 
     }
-
     //the method is sending verification code
     //the country id is concatenated
     //you can take the country id as user input as well
@@ -119,7 +118,6 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                 TaskExecutors.MAIN_THREAD,
                 mCallbacks);
     }
-
 
     //the callback to detect the verification status
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -152,12 +150,9 @@ public class VerifyPhoneActivity extends AppCompatActivity {
             mVerificationId = s;
         }
     };
-
-
     private void verifyVerificationCode(String code) {
         //creating the credential
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
-
         //signing the user
         signInWithPhoneAuthCredential(credential);
     }

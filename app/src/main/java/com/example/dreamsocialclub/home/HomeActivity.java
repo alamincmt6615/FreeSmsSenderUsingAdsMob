@@ -81,9 +81,6 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        iv_image_picker = findViewById(R.id.iv_image_picker);
-        //iv_image_picker.setOnClickListener(this);
-
         nav_profile_pic = findViewById(R.id.nav_profile_pic);
         setSupportActionBar(toolbar);
 
@@ -110,6 +107,7 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         View headerView = navigationView.getHeaderView(0);
+
         TextView tv_user_name = headerView.findViewById(R.id.tv_nav_user_name);
         TextView tv_user_mobile = headerView.findViewById(R.id.tv_user_mobile);
 
@@ -163,9 +161,9 @@ public class HomeActivity extends AppCompatActivity
                 Toast.makeText(context, "this is : home", Toast.LENGTH_SHORT).show();
                 fragment = new HomeFragment();
                 break;
-            case R.id.nav_silver_coin:
-                fragment = new GetSilverCoinFragment();
-                break;
+//            case R.id.nav_silver_coin:
+//                fragment = new GetSilverCoinFragment();
+//                break;
             case R.id.nav_message:
                 fragment = new MessageFragment();
                 Toast.makeText(context, "this is : nav_message", Toast.LENGTH_SHORT).show();
@@ -174,18 +172,18 @@ public class HomeActivity extends AppCompatActivity
                 fragment = new ProfileFragment();
                 Toast.makeText(context, "this is : nav_profile ", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.nav_topup:
-                fragment = new TopUpFragment();
-                Toast.makeText(context, "this is : nav_topup ", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.nav_convert_coin:
-                fragment = new ConvertCoinFragment();
-                Toast.makeText(context, "this is : nav_convert_coin ", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.nav_cash_out:
-
-                Toast.makeText(context, "this is : nav_cash_out ", Toast.LENGTH_SHORT).show();
-                break;
+//            case R.id.nav_topup:
+//                fragment = new TopUpFragment();
+//                Toast.makeText(context, "this is : nav_topup ", Toast.LENGTH_SHORT).show();
+//                break;
+//            case R.id.nav_convert_coin:
+//                fragment = new ConvertCoinFragment();
+//                Toast.makeText(context, "this is : nav_convert_coin ", Toast.LENGTH_SHORT).show();
+//                break;
+//            case R.id.nav_cash_out:
+//
+//                Toast.makeText(context, "this is : nav_cash_out ", Toast.LENGTH_SHORT).show();
+//                break;
             case R.id.nav_tutorial:
                 Toast.makeText(context, "this is : nav_tutorial ", Toast.LENGTH_SHORT).show();
                 break;
@@ -243,7 +241,7 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+       // getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -254,85 +252,9 @@ public class HomeActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_title) {
-
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
-//    private void chooseimage(){
-//        Intent intent = new Intent();
-//        intent.setType("image/*");
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-//        startActivityForResult(Intent.createChooser(intent,"Select Picture"),PIC_IMAGE_REQUEST);
-//        Toast.makeText(context, "plz choose image first", Toast.LENGTH_SHORT).show();
-//    }
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == PIC_IMAGE_REQUEST && resultCode == RESULT_OK && data!= null && data.getData() != null){
-//            filepath = data.getData();
-//            try {
-//                Bitmap bitmap = MediaStore.Images.Media.getBitmap(HomeActivity.this.getContentResolver(),filepath);//getActivity().getContentResolver(),filepath
-//                nav_profile_pic.setImageBitmap(bitmap);
-//                if (bitmap != null){
-//
-//                    uploadimage();
-//
-//                }
-//
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//    private void uploadimage() {
-//        storage = FirebaseStorage.getInstance();
-//        storageReference = storage.getReference().child("profile_picture");
-//        firebaseAuth = FirebaseAuth.getInstance();
-//        final String user_uid = firebaseAuth.getCurrentUser().getUid();
-//
-//        if (filepath != null){
-//            progressDialog = new ProgressDialog(HomeActivity.this);
-//            progressDialog.setTitle("Uploading...");
-//            progressDialog.show();
-//            final StorageReference ref = storageReference.child(user_uid+".jpg");
-//            ref.putFile(filepath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                @Override
-//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                    progressDialog.dismiss();
-//                    Toast.makeText(context, "Uploaded", Toast.LENGTH_SHORT).show();
-//                    ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                        @Override
-//                        public void onSuccess(Uri uri) {
-//                            databaseReference.child(user_uid).child("profile_picture").setValue(uri.toString());
-//                        }
-//                    });
-//                }
-//            })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            Toast.makeText(context, "Failed "+e.getMessage(), Toast.LENGTH_LONG).show();
-//                        }
-//                    })
-//                    .addOnProgressListener( new OnProgressListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-//                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-//                            progressDialog.setMessage("Uploading "+(int)progress+"%");
-//                        }
-//                    });
-//
-//        }
-//
-//
-//    }
 
     @Override
     public void onClick(View view) {
@@ -340,9 +262,7 @@ public class HomeActivity extends AppCompatActivity
             case R.id.tv_nav_user_name:
                 Toast.makeText(context, ""+preferenceData.getStringValue("name"), Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.iv_image_picker:
-                Toast.makeText(context, "pic", Toast.LENGTH_SHORT).show();
-                break;
+
         }
     }
 

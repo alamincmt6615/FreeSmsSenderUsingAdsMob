@@ -40,7 +40,7 @@
                 android:tint="@color/white" />
 
             <EditText
-                android:hint="Phone Number"
+                android:hint="Enter Your Yame"
                 android:inputType="textMultiLine"
                 android:id="@+id/et_registration_user_name"
                 android:layout_width="match_parent"
@@ -188,6 +188,7 @@
             android:layout_height="wrap_content" />
 
     </LinearLayout>
+
     </ScrollView>
 
 </LinearLayout>

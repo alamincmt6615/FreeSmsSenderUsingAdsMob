@@ -11,6 +11,6 @@
         android:layout_centerInParent="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/logo"
+        app:srcCompat="@drawable/logo_healthcare360"
          />
 </RelativeLayout>
